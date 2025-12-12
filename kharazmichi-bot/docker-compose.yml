@@ -1,0 +1,64 @@
+# ============================================
+# KHARAZMICHI BOT - DOCKER COMPOSE
+# For easy local development and deployment
+# ============================================
+
+version: "3.8"
+
+services:
+  # Main bot application
+  kharazmichi-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: kharazmichi-bot
+    restart: unless-stopped
+
+    # Environment file
+    env_file:
+      - .env
+
+    # Port mapping
+    ports:
+      - "${PORT:-8000}:8000"
+
+    # Volume mounts
+    volumes:
+      # Persist logs
+      - ./logs:/app/logs
+      # Knowledge documents (for loading)
+      - ./knowledge:/app/knowledge:ro
+
+    # Health check
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+# Optional: Add more services here
+# For example, a reverse proxy or monitoring

@@ -1,0 +1,1012 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        2256,
+        5184
+      ],
+      "id": "aeca280e-575f-4de7-8264-ee667e422dbc",
+      "name": "Telegram Trigger",
+      "webhookId": "a0c926f3-5610-4cd2-b61b-8452c9a6ec38"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        5248,
+        5088
+      ],
+      "id": "c759f304-b8ce-402e-84dc-f456ba8a1e45",
+      "name": "Send a text message",
+      "webhookId": "3c5c5f0e-0ac7-4629-801f-7bb5fea880c5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }} ?? {{ $json.text }}",
+        "options": {
+          "systemMessage": "# هویت و شخصیت\nنام: خوارزمی‌چی 🤖\nنقش: دستیار هوشمند دانشگاه خوارزمی\n\n# لحن گفتار\n- دوستانه، خودمونی و با حال دانشجویی\n- مؤدب و کمک‌کننده\n- مثل یه هم‌کلاسی باهوش که همیشه جواب سؤالات رو می‌دونه\n- استفاده از ایموجی برای صمیمی‌تر شدن گفتگو\n\n# وظایف اصلی\n1. پاسخ به سؤالات درباره دانشگاه خوارزمی\n2. راهنمایی درباره رشته‌ها، دانشکده‌ها و خدمات\n3. اطلاع‌رسانی درباره ساعات کاری، لوکیشن‌ها و امکانات\n4. ارسال لوکیشن جغرافیایی دانشکده‌ها و ساختمان‌ها (در صورت درخواست)\n\n# دستورالعمل‌های پاسخ‌دهی\n- همیشه از پایگاه دانش دانشگاه (University Knowledge Base) برای پاسخ استفاده کن\n- اگر اطلاعات دقیق نداری، صادقانه بگو و راهنمایی کن که از کجا می‌تونن اطلاعات رو پیدا کنن\n- وقتی کسی درباره لوکیشن می‌پرسه، از ابزار ارسال لوکیشن استفاده کن\n- جواب‌ها رو کوتاه، واضح و کاربردی بده\n- از زبان فارسی روان و طبیعی استفاده کن\n\n# نمونه پاسخ‌ها\n- \"سلام! من خوارزمی‌چیم 😄 هرچی راجع به دانشگاه خوارزمی بخوای، بپرس!\"\n- \"می‌خوای بدونی رشته‌ات چیه؟ یا دفتر گروه کجاست؟ من هستم 😉\"\n- \"بذار لوکیشن دقیق دانشکده رو برات بفرستم 📍\"\n\n# قوانین مهم\n- فقط درباره دانشگاه خوارزمی اطلاعات بده\n- اگر سوال خارج از حوزه دانشگاه بود، مؤدبانه توضیح بده که فقط می‌تونی درباره دانشگاه کمک کنی\n- همیشه مثبت، انرژی‌بخش و حامی دانشجو باش"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        4656,
+        5088
+      ],
+      "id": "fc2f009a-edc5-4393-8f42-39f9b78d0085",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        4496,
+        5312
+      ],
+      "id": "3d15aad8-f00f-4ac7-9bfb-e63f0ee3b338",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "fk4QCXfMuSjz400J",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        4624,
+        5312
+      ],
+      "id": "708744d3-53bf-415e-a04f-6caa3d46fcd0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4048,
+        5160
+      ],
+      "id": "7354f4be-d128-42b5-9116-3ea0b70d08cd",
+      "name": "Download Voice",
+      "webhookId": "98529e91-4a62-4d98-b09f-4e0dbb1c2edb"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "0f591beb-efc8-4df1-9aaa-5146a92df7a0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "voice"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "28e2285d-c325-49ac-b949-540fd48a8bde",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3824,
+        5088
+      ],
+      "id": "234e0880-5d29-49e2-bfaa-00bee42b0737",
+      "name": "Text or Voice?"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        4272,
+        5160
+      ],
+      "id": "8939a813-e8af-4b9a-af56-ffff2b019540",
+      "name": "Voice to Text",
+      "credentials": {
+        "openAiApi": {
+          "id": "fk4QCXfMuSjz400J",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "اطلاعات دانشگاه خوارزمی شامل لوکیشن دانشکده‌ها، رشته‌ها، ساعات کاری و راهنمای خدمات",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "id",
+          "value": "vector_store_key"
+        }
+      },
+      "id": "25a1856f-1729-4d4c-b682-8f7afa19626b",
+      "name": "University Knowledge Base",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        4752,
+        5312
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7e43eed5-024e-4727-bdf5-71b466815dc8",
+      "name": "OpenAI Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        4832,
+        5520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "fk4QCXfMuSjz400J",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "d291ada9-3058-4349-a569-43d1c4d18c1e",
+      "name": "Manual Trigger - Upload Data",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        5808
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b4e3b32a-b1c3-435c-84a2-6941984c01b2",
+      "name": "Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        3360,
+        6240
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "loader": "docxLoader",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "id": "c2eade14-b1d4-4e79-9daf-44f4635819c7",
+      "name": "Document Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        3280,
+        6032
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        }
+      },
+      "id": "584070e3-de2d-41b4-8159-e15dd44646e4",
+      "name": "Insert to Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        3184,
+        5808
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "1341c337-5dab-4b14-b54c-7c05002850cf",
+      "name": "OpenAI Embeddings for Insert",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3152,
+        6032
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "fk4QCXfMuSjz400J",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendLocation",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "latitude": "={{ $fromAI('latitude', 'Latitude coordinate of the location', 'number') }}",
+        "longitude": "={{ $fromAI('longitude', 'Longitude coordinate of the location', 'number') }}",
+        "additionalFields": {}
+      },
+      "id": "355f0587-aec5-40fd-8fc7-2565bbd63f6e",
+      "name": "Send Location Tool",
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        5040,
+        5312
+      ],
+      "webhookId": "23cb68fe-a8e4-4a90-9e30-1295a79d481a"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "folder",
+        "operation": "list",
+        "path": "/University_Knowledge",
+        "returnAll": true,
+        "filters": {}
+      },
+      "id": "eddf3055-9043-426c-803c-beaad366be01",
+      "name": "Download Word Files from Dropbox",
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        5808
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "path": "={{ $json.pathDisplay}}"
+      },
+      "id": "6fe044cb-9e7f-4042-b87a-273bff89ec48",
+      "name": "Download File Content",
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        2928,
+        5736
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => ({ json: { pathDisplay: item.json.pathDisplay } }));"
+      },
+      "id": "c30f4b4c-bd3f-4bc6-95c2-bac1a57c99c3",
+      "name": "Extract File Paths",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        5736
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telegram_id",
+              "keyValue": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+            }
+          ]
+        }
+      },
+      "id": "c03716d9-4800-4f58-83ba-de15b811ea01",
+      "name": "Check User Access",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2704,
+        5280
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.telegram_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "286acc57-19f9-47e6-a65a-9fe559c028b7",
+      "name": "Is User Authorized?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2928,
+        5280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "usage_logs",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telegram_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+            },
+            {
+              "keyName": "created_at",
+              "condition": "gte",
+              "keyValue": "={{ $now.startOf('day').toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "96936d80-4eb8-45e1-97a4-10ba68f24619",
+      "name": "Check Rate Limit",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3152,
+        5184
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ Array.isArray($json.data) ? $json.data.length : 0 }}",
+              "rightValue": 25,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "8ee33fe0-93bb-4b35-b03d-fdb49e358499",
+      "name": "Rate Limit OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3376,
+        5184
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "usage_logs",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "telegram_id",
+              "fieldValue": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+            },
+            {
+              "fieldId": "message_text",
+              "fieldValue": "={{ $('Telegram Trigger').item.json.message.text }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ $now }}"
+            }
+          ]
+        }
+      },
+      "id": "a6538df5-0238-46d8-be49-322ba03c30ef",
+      "name": "Update Usage Count",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3600,
+        5088
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "❌ شما هنوز ثبت‌نام نکرده‌اید!\n\nلطفاً ابتدا با کد دانشجویی خود ثبت‌نام کنید:\n/login کد_دانشجویی\n\nمثال:\n/login 4022023031",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a1e94f52-08ad-42f0-8b70-05b55af2aae8",
+      "name": "Send Unauthorized Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3152,
+        5376
+      ],
+      "webhookId": "ec575543-89d3-4edf-a460-1b03e394e11a"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "شما به حد مجاز استفاده روزانه (50 پیام) رسیده‌اید. لطفاً فردا دوباره تلاش کنید. ⏰",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "6487f044-99de-4a6b-9300-825a9f11a132",
+      "name": "Send Rate Limit Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3600,
+        5280
+      ],
+      "webhookId": "ad291363-163e-4c15-8566-29d9b6d0a327"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-1",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+                    "rightValue": "/login",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Login Command"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-2",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+                    "rightValue": "/login",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notStartsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Normal Message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d783a9af-19ab-4ee6-bb99-82001a08f271",
+      "name": "Check Message Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2480,
+        5184
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "users",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "telegram_id",
+              "fieldValue": "={{ $('Parse Login Command').item.json.telegram_id }}"
+            },
+            {
+              "fieldId": "username",
+              "fieldValue": "={{ $('Parse Login Command').item.json.username }}"
+            },
+            {
+              "fieldId": "first_name",
+              "fieldValue": "={{ $('Parse Login Command').item.json.first_name }}"
+            },
+            {
+              "fieldId": "student_code",
+              "fieldValue": "={{ $('Parse Login Command').item.json.student_code }}"
+            }
+          ]
+        }
+      },
+      "id": "3f1aada2-52b7-49ee-9857-093909d819db",
+      "name": "Register User",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2928,
+        4992
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=✅ ثبت‌نام موفقیت‌آمیز بود!\n\nکد دانشجویی شما ({{ $('Parse Login Command').item.json.student_code }}) با موفقیت ثبت شد. حالا می‌تونید از من هر سوالی درباره دانشگاه خوارزمی بپرسید! 🎓\n\nبرای شروع، می‌تونید بپرسید:\n- دانشکده من کجاست؟\n- ساعت کاری کتابخانه چیه؟\n- رشته‌های دانشگاه کدومن؟",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "08529b71-067d-4c4c-9133-78d5dae312fe",
+      "name": "Send Login Success",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3152,
+        4992
+      ],
+      "webhookId": "f537511e-f8e3-4bdd-ad2d-ada60266c2a8"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Parse /login command - expects format: /login STUDENT_CODE\nconst messageText = $input.item.json.message.text;\nconst telegramData = $input.item.json.message.from;\n\n// Extract student code from command\nconst parts = messageText.trim().split(/\\s+/);\nconst studentCode = parts[1] || '';\n\n// Validate student code format (assuming it should be numeric and have a certain length)\nif (!studentCode || studentCode.length < 5) {\n  throw new Error('Invalid student code format. Please use: /login YOUR_STUDENT_CODE');\n}\n\n// Return parsed data\nreturn {\n  telegram_id: telegramData.id,\n  username: telegramData.username || '',\n  first_name: telegramData.first_name || '',\n  student_code: studentCode\n};"
+      },
+      "id": "e046b62e-5fd6-4817-bf8a-ace9a3e1a589",
+      "name": "Parse Login Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2704,
+        4992
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Message Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voice": {
+      "main": [
+        [
+          {
+            "node": "Voice to Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text or Voice?": {
+      "main": [
+        [
+          {
+            "node": "Download Voice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice to Text": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "University Knowledge Base": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "University Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger - Upload Data": {
+      "main": [
+        [
+          {
+            "node": "Download Word Files from Dropbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert to Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Embeddings for Insert": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert to Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Location Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Word Files from Dropbox": {
+      "main": [
+        [
+          {
+            "node": "Insert to Vector Store",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract File Paths",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File Content": {
+      "main": [
+        [
+          {
+            "node": "Insert to Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract File Paths": {
+      "main": [
+        [
+          {
+            "node": "Download File Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check User Access": {
+      "main": [
+        [
+          {
+            "node": "Is User Authorized?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is User Authorized?": {
+      "main": [
+        [
+          {
+            "node": "Check Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Unauthorized Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limit OK?": {
+      "main": [
+        [
+          {
+            "node": "Update Usage Count",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Rate Limit Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Usage Count": {
+      "main": [
+        [
+          {
+            "node": "Text or Voice?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Message Type": {
+      "main": [
+        [
+          {
+            "node": "Parse Login Command",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check User Access",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register User": {
+      "main": [
+        [
+          {
+            "node": "Send Login Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Login Command": {
+      "main": [
+        [
+          {
+            "node": "Register User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateId": "ready-to-run-ai-workflow",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ba869e87417808cf16041a22e5e6be923343a1edefaa029b691b6c2a1b92a021"
+  }
+}
